@@ -33,25 +33,136 @@ samples, guidance on mobile development, and a full API reference.
     -เปิด `$app->withEloquent();` ใน bootstrap/app.php
   -สร้างตาราง
 ```sql
-	CREATE TABLE members(
-		id int(8) AUTO_INCREMENT,
-    		name varchar(255) DEFAULT "",
-    		last_name varchar(255) DEFAULT "",
-    		password varchar(255) DEFAULT "",
-    		email varchar(255) DEFAULT "",
-    		created_at timestamp DEFAULT CURRENT_TIMESTAMP,
-		updated_at timestamp DEFAULT CURRENT_TIMESTAMP,
-		CONSTRAINT member_pk PRIMARY KEY(id)
-	);
-	insert into members set name="test" , last_name="kub" ,email="test@gmail.com",password="555";
-	CREATE TABLE products(
-		p_id int(8) AUTO_INCREMENT ,
-	     	p_name varchar(255),
-	     	p_price float DEFAULT 0.0,
-	    	p_img varchar(255) DEFAULT "",
-	    	created_at timestamp DEFAULT CURRENT_TIMESTAMP,
-	    	updated_at timestamp	DEFAULT CURRENT_TIMESTAMP,
-	    	CONSTRAINT products PRIMARY KEY(p_id)
-	);
+CREATE TABLE `facultys` (
+  `f_id` int NOT NULL,
+  `f_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `details` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `f_img` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+
+INSERT INTO
+  `facultys` (
+    `f_id`,
+    `f_name`,
+    `details`,
+    `created_at`,
+    `updated_at`,
+    `f_img`
+  )
+VALUES
+  (
+    1,
+    'คณะการบัญชีและการจัดการ',
+    'สาขาคอมพิวเตอร์',
+    '2024-03-25 05:45:37',
+    '2024-03-25 05:45:37',
+    '20240305160300.png'
+  );
+
+CREATE TABLE `members` (
+  `id` int NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `last_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '',
+  `student_id` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `m_img` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '',
+  `password` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT '123',
+  `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL DEFAULT ''
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+
+INSERT INTO
+  `members` (
+    `id`,
+    `name`,
+    `last_name`,
+    `student_id`,
+    `created_at`,
+    `updated_at`,
+    `m_img`,
+    `password`,
+    `email`
+  )
+VALUES
+  (
+    1,
+    'ทดสอบ',
+    'ทดสอบ',
+    '99999',
+    '2024-03-26 16:18:09',
+    '2024-03-26 16:18:09',
+    '20240326160309.jpg',
+    '1',
+    'love-you@gmail.com'
+  );
+
+CREATE TABLE `users` (
+  `u_id` int NOT NULL,
+  `first_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `last_name` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(50) COLLATE utf8mb4_general_ci NOT NULL
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+
+INSERT INTO
+  `users` (
+    `u_id`,
+    `first_name`,
+    `last_name`,
+    `email`,
+    `created_at`,
+    `updated_at`,
+    `password`
+  )
+VALUES
+  (
+    1,
+    'foam',
+    'supornphan',
+    'foam@gmail.com',
+    '2024-03-25 06:03:55',
+    '2024-03-25 06:03:55',
+    '1234'
+  );
+
+ALTER TABLE
+  `facultys`
+ADD
+  PRIMARY KEY (`f_id`);
+
+ALTER TABLE
+  `members`
+ADD
+  PRIMARY KEY (`id`);
+
+ALTER TABLE
+  `users`
+ADD
+  PRIMARY KEY (`u_id`);
+
+ALTER TABLE
+  `facultys`
+MODIFY
+  `f_id` int NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 5;
+
+ALTER TABLE
+  `members`
+MODIFY
+  `id` int NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 16;
+
+ALTER TABLE
+  `users`
+MODIFY
+  `u_id` int NOT NULL AUTO_INCREMENT,
+  AUTO_INCREMENT = 2;
+
+COMMIT;
+
 ```
 
