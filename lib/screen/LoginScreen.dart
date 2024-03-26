@@ -45,11 +45,11 @@ class _LoginScreenState extends State<LoginScreen> {
       child: IntrinsicHeight(
         child: Card(
             elevation: 4.0,
-            color: Color.fromRGBO(255, 255, 255, 0.808),
+            color: const Color.fromRGBO(255, 255, 255, 0.808),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 const Text(
                   "ร้านขายหนังสือ",
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: TextStyle(color: Colors.white),
                       )),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
               ],
             )),
       ),

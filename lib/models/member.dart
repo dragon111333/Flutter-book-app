@@ -4,15 +4,17 @@ part 'member.g.dart';
 @JsonSerializable(explicitToJson: true)
 class Member {
 //ก ำหนดรำยชื่อฟิวด์ในตำรำง products พร้อมก ำหนดชนิดข้อมูล
-  String? name, last_name, email, created_at, updated_at;
+  String? name, last_name, email, created_at, updated_at, student_id, m_img;
   int? id;
 
 //ก ำหนดตำมรำยชื่อฟิวด์ที่ประกำศไว้ข้ำงต้น
   Member({
     this.id,
     this.name,
+    this.m_img,
     this.last_name,
     this.email,
+    this.student_id,
     this.created_at,
     this.updated_at,
   });

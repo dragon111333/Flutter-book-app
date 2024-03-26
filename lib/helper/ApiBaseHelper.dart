@@ -6,8 +6,9 @@ import 'AppException.dart';
 
 class ApiBaseHelper {
   //กำหนดหมายเลขไอพีแอดเดรสของเครื่อง server
-  static const String _baseUrl = "http://54.169.37.117";
-  static const _api = "$_baseUrl/user4/api";
+  static const String _baseUrl = "http://3.0.182.40";
+  static const _api = "$_baseUrl/mbsapp/api";
+  static const _publicFolder = "$_baseUrl/mbsapp";
   //กำหนด url ของ api endpoint สำหรับเรียกดูรายการสินค้าทั้งหมด
   static const getProduct = "$_api/products_image";
   //กำหนด url ของ api endpoint สำหรับเพิ่มข้อมูลสินค้า
@@ -18,7 +19,7 @@ class ApiBaseHelper {
   static const updateProduct = "$_api/products";
   //กำหนด url ของ api endpoint สำหรับการ ล็อกอิน
   static const userLogin = "$_api/userslogin";
-
+  static const memberImage = "$_publicFolder/img/";
   static const getMembers = "$_api/members";
   static const getOneMember = "$_api/members/";
   static const memberLogin = "$_api/memberLogin";
@@ -42,6 +43,7 @@ class ApiBaseHelper {
     }
 
     try {
+      print("REQUEST GET TO : $url");
       final response = await http.get(
         Uri.parse(url!),
         headers: header,
@@ -225,17 +227,18 @@ class ApiBaseHelper {
     Map<String, String> header;
     if (token != null) {
       header = {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'multipart/form-data',
         'Authorization': 'bearer $token',
       };
     } else {
       header = {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'multipart/form-data',
       };
     }
 
-    var request = http.MultipartRequest('PUT', Uri.parse(url!));
-    //  dataPut!.addAll({'_method': 'PUT'});
+    var request =
+        http.MultipartRequest('POST', Uri.parse("${url!}?_method=PUT"));
+
     //ระบุข้อมูลที่จะส่งไปให้ api
     request.fields.addAll(dataPut!);
     //ระบุส่วนของ header จะทำการส่งไปให้ api
@@ -246,24 +249,16 @@ class ApiBaseHelper {
       request.files.add(await http.MultipartFile.fromPath(
           fileUpload['fieldName']!, fileUpload['filePath']!));
     }
-
-    // Convert request details to a string
-    String details = 'Method: ${request.method}';
-    details += 'URL: ${request.url}';
-    details += 'Headers: ${jsonEncode(request.headers)}';
-    details += 'Fields: ${jsonEncode(request.fields)}';
-    details += 'Files: ${request.files}';
-
     try {
       //ส่งข้อมูลไปยัง api
       final response = await request.send();
+
       if (response.statusCode == statusCode) {
-        data = {'status': 'ok', 'data': 'Success', "detail": details};
+        data = {'status': 'ok', 'data': await response.stream.bytesToString()};
       } else {
         data = {
           'status': 'fail',
-          'data': 'Bad request',
-          "detail": await response.stream.bytesToString()
+          'data': 'Bad request ${await response.stream.bytesToString()}'
         };
       }
     } on SocketException {
@@ -278,6 +273,7 @@ class ApiBaseHelper {
       data = {'status': 'fail', 'data': 'Session timeout'};
     }
 
+    print("PUT[$url]===> RESPONSE DATA : ${data.toString()}");
     return data;
   }
 
@@ -321,6 +317,8 @@ class ApiBaseHelper {
     } on UnauthorisedException {
       data = {'status': 'fail', 'data': 'Session timeout'};
     }
+
+    print("$url Delete data : ${data}");
 
     return data;
   }

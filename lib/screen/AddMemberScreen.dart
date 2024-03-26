@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_api_db/helper/ApiBaseHelper.dart';
 import 'package:flutter_api_db/models/member.dart';
 import 'package:flutter_api_db/screen/CustomDrawer.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'NavBar.dart';
@@ -21,11 +23,13 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
   TextEditingController name = TextEditingController();
   TextEditingController last_name = TextEditingController();
   TextEditingController email = TextEditingController();
+  TextEditingController student_id = TextEditingController();
   TextEditingController password = TextEditingController();
 
   late bool isFinish;
   Future<Map<String, dynamic>>? result;
   late Member? loginMember;
+  File? uploadImage;
 
   @override
   void initState() {
@@ -39,6 +43,8 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     last_name.text = "";
     email.text = "";
     password.text = "";
+    student_id.clear();
+    uploadImage = null;
   }
 
   Future<void> createMember() async {
@@ -47,13 +53,16 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       "email": email.text,
       "name": name.text,
       "last_name": last_name.text,
-      "password": password.text
+      "password": password.text,
+      "student_id": student_id.text,
     };
 
     if (userData["email"] == "" ||
         userData["name"] == "" ||
         userData["last_name"] == "" ||
-        userData["password"] == "") {
+        userData["password"] == "" ||
+        userData["student_id"] == "" ||
+        uploadImage == null) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         showDialog(
             context: context,
@@ -83,8 +92,15 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
     }
 
     setState(() {
-      result = ApiBaseHelper().manualPost(
-          url: ApiBaseHelper.createMember, body: userData, statusCode: 201);
+      result = ApiBaseHelper().post(
+          url: ApiBaseHelper.createMember,
+          dataPost: userData,
+          fileUpload: {
+            "fieldName": "m_img", //ฟิวด์ใน api
+            "filePath": uploadImage!.path, //ที่อยู่ (path) ของไฟล์รูปภาพ
+          },
+          statusCode: 201);
+      uploadImage = null;
     });
   }
 
@@ -104,8 +120,7 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           if (snapshot.data!["status"] != "ok") {
             throw ErrorDescription("status not ok!");
           } else {
-            Member member =
-                Member.fromJson(jsonDecode(snapshot.data!['detail']));
+            Member member = Member.fromJson(jsonDecode(snapshot.data!['data']));
             if (member.id != null) {
               print("add success");
               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -144,6 +159,15 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
         return const Text("");
       }),
     );
+  }
+
+  Future<void> chooseImage(ImageSource source) async {
+    //เรียกใช้งาน ImagePicker
+    var choosedimage = await ImagePicker().pickImage(source: source);
+    setState(() {
+      if (choosedimage == null) return;
+      uploadImage = File(choosedimage.path);
+    });
   }
 
   @override
@@ -190,6 +214,12 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           SizedBox(
             width: inputWidth,
             child: TextFormField(
+                controller: student_id,
+                decoration: const InputDecoration(label: Text('รหัสนิสิต'))),
+          ),
+          SizedBox(
+            width: inputWidth,
+            child: TextFormField(
                 controller: email,
                 decoration: const InputDecoration(label: Text('E-mail'))),
           ),
@@ -202,6 +232,39 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           ),
           const SizedBox(
             height: 30,
+          ),
+          SizedBox(
+            child: PopupMenuButton<ImageSource>(
+              child: SizedBox(
+                width: 150,
+                height: 120,
+                //ถ้าผู้ใช้เลือกรูปภาพแล้วให้แสดงภาพที่เลือก ถ้าไม่ใช่ให้แสดงไอคอน image
+                child: uploadImage != null
+                    ? Image.file(uploadImage!)
+                    : const Icon(
+                        Icons.image,
+                        size: 100,
+                      ),
+              ),
+              //รายการเมนูสำหรับเลือกรูปภาพ
+              itemBuilder: (BuildContext context) =>
+                  <PopupMenuEntry<ImageSource>>[
+                //เลือกรูปภาพจาก Image Gallery
+                const PopupMenuItem<ImageSource>(
+                  value: ImageSource.gallery,
+                  child: Icon(Icons.image_search_rounded),
+                ),
+                //เลือกรูปภาพจากกล้องถ่ายรูป
+                const PopupMenuItem<ImageSource>(
+                  value: ImageSource.camera,
+                  child: Icon(Icons.camera_alt_rounded),
+                ),
+              ],
+              //เมื่อเลือกเมนูแล้วจะไปเรียกใช้ฟังก์ชัน chooseImage
+              onSelected: (ImageSource imageSource) {
+                chooseImage(imageSource);
+              },
+            ),
           ),
           SizedBox(
               width: inputWidth,

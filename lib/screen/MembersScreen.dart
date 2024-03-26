@@ -42,6 +42,7 @@ class _MemberScreenState extends State<MemberScreen> {
       deleteResult = ApiBaseHelper().delete(
           url: ApiBaseHelper.deleteMember + memberID.toString(),
           statusCode: 202);
+      loadMembers();
     });
   }
 
@@ -89,22 +90,83 @@ class _MemberScreenState extends State<MemberScreen> {
         });
   }
 
+  Card buildCard(Member? member) {
+    var heading = "${member!.name!} ${member.last_name!}";
+    var subheading = member.student_id!;
+    var cardImage = NetworkImage(ApiBaseHelper.memberImage + member.m_img!);
+    var supportingText = member.email!;
+
+    return Card(
+        elevation: 4.0,
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(heading),
+              subtitle: Text(subheading),
+              trailing: const Icon(Icons.person),
+            ),
+            SizedBox(
+              height: 100.0,
+              child: Ink.image(
+                image: cardImage,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              alignment: Alignment.centerLeft,
+              child: Text(supportingText),
+            ),
+            ButtonBar(
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) =>
+                                EditMemberScreen(memberID: member.id!)));
+                  },
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(255, 255, 238, 0)),
+                  label: const Text(
+                    "แก้ไข",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                    color: Colors.black,
+                  ),
+                ),
+                ElevatedButton.icon(
+                    onPressed: () {
+                      removeMember(member.id!);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color.fromARGB(
+                          255, 255, 117, 75), // Background color
+                    ),
+                    icon: const Icon(
+                      Icons.delete,
+                      color: Colors.white,
+                    ),
+                    label: const Text(
+                      "ลบ",
+                      style: TextStyle(color: Colors.white),
+                    ))
+              ],
+            )
+          ],
+        ));
+  }
+
   FutureBuilder<Map<String, dynamic>> MembersSnap() {
     return FutureBuilder<Map<String, dynamic>>(
         future: members,
         builder: (BuildContext context,
             AsyncSnapshot<Map<String, dynamic>> snapshot) {
-          DataTable emptyTable = DataTable(
-            columns: const <DataColumn>[
-              DataColumn(
-                label: Expanded(
-                  child: CircularProgressIndicator(),
-                ),
-              )
-            ],
-            rows: const <DataRow>[
-              DataRow(cells: <DataCell>[DataCell(Text(""))])
-            ],
+          ListView emptyTable = ListView(
+            children: const [],
           );
           try {
             if (snapshot.connectionState == ConnectionState.waiting) {
@@ -116,118 +178,21 @@ class _MemberScreenState extends State<MemberScreen> {
 
                 List<dynamic> rawMemberRow = snapshot.data!["data"];
                 int index = 0;
-                List<DataRow> memberRow = rawMemberRow.map((dynamic e) {
+                List<Card> memberRow = rawMemberRow.map((dynamic e) {
                   index++;
-                  return DataRow(
-                    cells: <DataCell>[
-                      DataCell(Text(index.toString())),
-                      DataCell(Text(e["name"])),
-                      DataCell(Text(e["last_name"])),
-                      DataCell(Text(e["email"])),
-                      DataCell(ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) =>
-                                      EditMemberScreen(memberID: e["id"])));
-                        },
-                        style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                const Color.fromARGB(255, 255, 238, 0)),
-                        label: const Text(
-                          "แก้ไข",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        icon: const Icon(
-                          Icons.edit_outlined,
-                          color: Colors.black,
-                        ),
-                      )),
-                      DataCell(ElevatedButton.icon(
-                          onPressed: () {
-                            removeMember(int.parse(e["id"].toString()));
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color.fromARGB(
-                                255, 255, 117, 75), // Background color
-                          ),
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.white,
-                          ),
-                          label: const Text(
-                            "ลบ",
-                            style: TextStyle(color: Colors.white),
-                          ))),
-                    ],
-                  );
+                  Member member = Member(
+                      id: e["id"],
+                      name: e["name"],
+                      last_name: e["last_name"],
+                      email: e["email"],
+                      m_img: e["m_img"],
+                      student_id: e["student_id"]);
+
+                  return buildCard(member);
                 }).toList();
 
-                Widget memberList = DataTable(
-                  columns: const <DataColumn>[
-                    DataColumn(
-                      label: Expanded(
-                        child: Text(
-                          'No.',
-                          style: TextStyle(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Expanded(
-                        child: Text(
-                          'ชื่อ',
-                          style: TextStyle(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Expanded(
-                        child: Text(
-                          'นามสกุล',
-                          style: TextStyle(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Expanded(
-                        child: Text(
-                          'E-mail',
-                          style: TextStyle(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Expanded(
-                        child: Text(
-                          '',
-                          style: TextStyle(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                    DataColumn(
-                      label: Expanded(
-                        child: Text(
-                          '',
-                          style: TextStyle(
-                              fontStyle: FontStyle.normal,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    ),
-                  ],
-                  rows: memberRow,
+                ListView memberList = ListView(
+                  children: memberRow,
                 );
                 return memberList;
               } else if (snapshot.hasError) {
@@ -236,7 +201,7 @@ class _MemberScreenState extends State<MemberScreen> {
               }
             }
           } catch (error) {
-            print('เกิดข้อผิดพลาด: $error');
+            print('เกิดข้อผิดพลาด: ${error.toString()}');
             return emptyTable;
           }
           return emptyTable;
@@ -265,16 +230,15 @@ class _MemberScreenState extends State<MemberScreen> {
         title: const Text('ผู้ใช้งาน'),
         backgroundColor: Colors.amber,
       ),
-      body: SingleChildScrollView(
-        child: Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
+      body: Container(
+        alignment: Alignment.center,
+        margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
+        child: Center(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Text(
                 "รายชื่อสมาชิก",
-                style: TextStyle(fontSize: 40, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
               ElevatedButton(
                 onPressed: () {
@@ -293,8 +257,8 @@ class _MemberScreenState extends State<MemberScreen> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
+              SizedBox(
+                height: MediaQuery.of(context).size.height - 280,
                 child: MembersSnap(),
               ),
               DeleteStatus()
