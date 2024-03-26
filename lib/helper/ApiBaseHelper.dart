@@ -225,17 +225,18 @@ class ApiBaseHelper {
     Map<String, String> header;
     if (token != null) {
       header = {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'multipart/form-data',
         'Authorization': 'bearer $token',
       };
     } else {
       header = {
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'multipart/form-data',
       };
     }
 
-    var request = http.MultipartRequest('PUT', Uri.parse(url!));
-    //  dataPut!.addAll({'_method': 'PUT'});
+    var request =
+        http.MultipartRequest('POST', Uri.parse("${url!}?_method=PUT"));
+
     //ระบุข้อมูลที่จะส่งไปให้ api
     request.fields.addAll(dataPut!);
     //ระบุส่วนของ header จะทำการส่งไปให้ api
@@ -246,24 +247,16 @@ class ApiBaseHelper {
       request.files.add(await http.MultipartFile.fromPath(
           fileUpload['fieldName']!, fileUpload['filePath']!));
     }
-
-    // Convert request details to a string
-    String details = 'Method: ${request.method}';
-    details += 'URL: ${request.url}';
-    details += 'Headers: ${jsonEncode(request.headers)}';
-    details += 'Fields: ${jsonEncode(request.fields)}';
-    details += 'Files: ${request.files}';
-
     try {
       //ส่งข้อมูลไปยัง api
       final response = await request.send();
+
       if (response.statusCode == statusCode) {
-        data = {'status': 'ok', 'data': 'Success', "detail": details};
+        data = {'status': 'ok', 'data': await response.stream.bytesToString()};
       } else {
         data = {
           'status': 'fail',
-          'data': 'Bad request',
-          "detail": await response.stream.bytesToString()
+          'data': 'Bad request ${await response.stream.bytesToString()}'
         };
       }
     } on SocketException {
@@ -278,6 +271,7 @@ class ApiBaseHelper {
       data = {'status': 'fail', 'data': 'Session timeout'};
     }
 
+    print("PUT[$url]===> RESPONSE DATA : ${data.toString()}");
     return data;
   }
 
