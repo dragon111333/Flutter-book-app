@@ -1,7 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_api_db/helper/ApiBaseHelper.dart';
+import 'package:flutter_api_db/models/member.dart';
 import 'package:flutter_api_db/models/products.dart';
+import 'package:flutter_api_db/screen/CustomDrawer.dart';
+import 'package:flutter_api_db/screen/NavBar.dart';
 import 'package:flutter_api_db/screen/productItem.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductListScreen extends StatefulWidget {
   const ProductListScreen({super.key});
@@ -16,24 +22,41 @@ class _ProductListPageState extends State<ProductListScreen> {
   //เหตุการณ์เริ่มตน้ ทา งานของหน้าน
   //ประกาศตัวแปรประเภท Future ส าหรับรับผลลัพธ์ได้จาก api ลบข้อมูลสินค้า
   late Future<Map<String, dynamic>> futureDeleteProduct;
+  late Member? loginMember;
   @override
   void initState() {
     super.initState();
     //เรียกใช้ฟังก์ชัน loadProduct ส าหรับดึงข้อมูล
     loadProduct();
+    loginMember = Member();
   }
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      drawer: CustomDrawer(
+        member: loginMember!,
+      ),
+      onDrawerChanged: (isOpen) {
+        setState(() {
+          (() async {
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+            String? userString = prefs.getString('user_info');
+            loginMember = Member.fromJson(jsonDecode(userString!));
+          })();
+        });
+      },
       appBar: AppBar(
+        backgroundColor: Colors.amber,
         title: const Text(
           'รายการสินค้า',
         ),
       ),
       //ในส่วน body ให้เรียกใช้ฟังก์ชัน buildFutureProduct
       body: buildFutureProduct(),
+      bottomNavigationBar: const NavBar(index: 2),
     );
   }
 
@@ -87,6 +110,7 @@ class _ProductListPageState extends State<ProductListScreen> {
           }
         } else if (snapshot.hasError) {
           //ถ้ามี Error จะแสดงข้อมูลแจ้ง error
+          print(snapshot.error);
           return const Text('ผิดพลาด');
         }
         // ถ้ายังไม่มีข้อมูลใดๆ จะแสดงสถานะการโหลดข้อมูล โดยใช้ CircularProgressIndicator

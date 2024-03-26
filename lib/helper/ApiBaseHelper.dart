@@ -19,11 +19,11 @@ class ApiBaseHelper {
   //กำหนด url ของ api endpoint สำหรับการ ล็อกอิน
   static const userLogin = "$_api/userslogin";
 
-  static const userUpdate = "$_api/users/";
-
   static const getMembers = "$_api/members";
+  static const getOneMember = "$_api/members/";
   static const memberLogin = "$_api/memberLogin";
   static const createMember = "$_api/members";
+  static const updateMember = "$_api/members/";
   static const deleteMember = "$_api/members/";
 
   Future<Map<String, dynamic>> get({String? url, String? token}) async {
@@ -102,7 +102,7 @@ class ApiBaseHelper {
     try {
       //ส่งข้อมูลไปยัง api
       final response = await request.send();
-      print('===$userLogin > ${response.statusCode}');
+
       if (response.statusCode == statusCode) {
         data = {'status': 'ok', 'data': await response.stream.bytesToString()};
       } else {
@@ -120,6 +120,7 @@ class ApiBaseHelper {
       data = {'status': 'fail', 'data': 'Session timeout'};
     }
 
+    print("POST[$url]===> RESPONSE DATA : ${data.toString()}");
     return data;
   }
 

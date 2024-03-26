@@ -1,25 +1,79 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_api_db/screen/NavBar.dart';
 
 class AboutUs extends StatelessWidget {
   const AboutUs({super.key});
+
+  Card buildCard(String name, String fac, String img) {
+    var heading = name;
+    var subheading = fac;
+    var cardImage = NetworkImage(img);
+    var supportingText = '';
+    return Card(
+        elevation: 4.0,
+        child: Column(
+          children: [
+            ListTile(
+              title: Text(heading),
+              subtitle: Text(subheading),
+              trailing: const Icon(Icons.book),
+            ),
+            SizedBox(
+              height: 400.0,
+              child: Ink.image(
+                image: cardImage,
+                fit: BoxFit.cover,
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              alignment: Alignment.centerLeft,
+              child: Text(supportingText),
+            ),
+            const ButtonBar(
+              children: [
+                // TextButton(
+                //   child: const Text('CONTACT AGENT'),
+                //   onPressed: () {/* ... */},
+                // ),
+                // TextButton(
+                //   child: const Text('LEARN MORE'),
+                //   onPressed: () {/* ... */},
+                // )
+              ],
+            )
+          ],
+        ));
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('(ผู้จัดทำ)'),
+        backgroundColor: Colors.amber,
+        title: const Text('ผู้จัดทำ'),
       ),
-      body: Center(
-        child: Column(
-          children: [
-            const Text('อริสรา สัตย์ซื่อ'),
-            const Text('คณะบัญชีและการจัดการ'),
-            const Text('มหาวิทยาลัยมหาสารคาม'),
-            Image.network(
-                'https://scontent.fbkk20-1.fna.fbcdn.net/v/t39.30808-6/428153668_2193964850807793_308891037659948058_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_eui2=AeGKR1jC4enUJKOuqAtt9Hz3DzYMDZrQ6NcPNgwNmtDo15a0ZYzkqskAYHYiSmASA9nZ52epKXWjtDOvT14bX23a&_nc_ohc=PiN-is5kz98AX9xiKHY&_nc_ht=scontent.fbkk20-1.fna&oh=00_AfBaRAoZQAmklqs5ImWSWvhQUVXEn88gt_XjANyp_vR9IA&oe=6602A959')
-          ],
+      body: Container(
+        alignment: Alignment.center,
+        margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
+        child: Center(
+          child: ListView(
+            children: [
+              buildCard("นายอันดี เอเว่นส์", "คณะการบัญชีและการจัดการ",
+                  "http://54.169.37.117/user4/img/1.jpeg"),
+              buildCard("นางสาวณันทิชา วงษ์หงษ์", "คณะการบัญชีและการจัดการ",
+                  "http://54.169.37.117/user4/img/2.jpeg"),
+              buildCard("นางสาวอริสรา สัตย์ซื่อ", "คณะการบัญชีและการจัดการ",
+                  "http://54.169.37.117/user4/img/3.jpeg"),
+              buildCard("นางสาวอริสรา ผดุงเจริญ", "คณะการบัญชีและการจัดการ",
+                  "http://54.169.37.117/user4/img/4.jpeg"),
+              buildCard("นายศุภกรณ์ ศรีสง่า", "คณะการบัญชีและการจัดการ",
+                  "http://54.169.37.117/user4/img/5.jpeg"),
+            ],
+          ),
         ),
       ),
+      bottomNavigationBar: const NavBar(index: 4),
     );
   }
 }

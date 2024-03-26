@@ -44,7 +44,9 @@ class _ProductUpdateScreenState extends State<ProductUpdateScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('แก้ไขข้อมูลสินค้า')),
+      appBar: AppBar(
+          backgroundColor: Colors.amber,
+          title: const Text('แก้ไขข้อมูลสินค้า')),
       body: result == null ? showForm() : buildFutureBuilder(),
     );
   }
@@ -66,7 +68,8 @@ class _ProductUpdateScreenState extends State<ProductUpdateScreen> {
               TextFormField(
                 controller: p_price,
                 decoration: const InputDecoration(labelText: 'ราคา'),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -131,7 +134,8 @@ class _ProductUpdateScreenState extends State<ProductUpdateScreen> {
                     }
                     setState(() {
                       //ก าหนด url ส าหรับเรียกใช้งาน api endpoint ส าหรับแก้ไขข้อมูลสินค้าตามรหัส p_id
-                      String urlApi = '${ApiBaseHelper.updateProduct}/${widget.data.p_id!}';
+                      String urlApi =
+                          '${ApiBaseHelper.updateProduct}/${widget.data.p_id!}';
                       //เรียกใช้งานฟังก์ชัน put เพื่อส่งข้อมูลไปยัง api
                       result = ApiBaseHelper().put(
                           url: urlApi, //url ของ api endpoint

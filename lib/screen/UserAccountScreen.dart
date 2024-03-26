@@ -44,7 +44,7 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
     };
 
     Future<Map<String, dynamic>> result = ApiBaseHelper().manualPut(
-        url: ApiBaseHelper.userUpdate +
+        url: ApiBaseHelper.updateMember +
             widget.data.u_id.toString(), //url ของ api endpoint
         dataPut: userData,
         statusCode: 202 //รหัสการตอบกลับของ api เมื่อบันทึกข้อมูลส าเร็จ
@@ -86,7 +86,9 @@ class _UserAccountScreenState extends State<UserAccountScreen> {
     double inputWidth = 250;
 
     return Scaffold(
-        appBar: AppBar(title: const Text('แก้ไขข้อมูลผู้ใช้')),
+        appBar: AppBar(
+            backgroundColor: Colors.amber,
+            title: const Text('แก้ไขข้อมูลผู้ใช้')),
         //body: result == null ? showForm() : buildFutureBuilder(),
         body: Container(
           alignment: Alignment.center,

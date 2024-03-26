@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_api_db/screen/AddMemberScreen.dart';
 import 'package:flutter_api_db/screen/MembersScreen.dart';
+import 'package:flutter_api_db/screen/ProductListScreen.dart';
+import 'package:flutter_api_db/screen/aboutUs.dart';
+import 'package:flutter_api_db/screen/productAddScreen.dart';
 
 class NavBar extends StatefulWidget {
   final int index;
@@ -31,9 +34,19 @@ class _NavBarState extends State<NavBar> {
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (_) => const MemberScreen()));
               break;
-            case 2:
+            case 1:
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (_) => const AddMemberScreen()));
+              break;
+            case 2:
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const ProductListScreen()));
+            case 3:
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: (_) => const ProductAddScreen()));
+            case 4:
+              Navigator.pushReplacement(
+                  context, MaterialPageRoute(builder: (_) => const AboutUs()));
             default:
           }
         });
@@ -47,12 +60,20 @@ class _NavBarState extends State<NavBar> {
           label: 'หน้าแรก',
         ),
         NavigationDestination(
+          icon: Badge(child: Icon(Icons.add_comment)),
+          label: 'เพิ่มสมาชิก',
+        ),
+        NavigationDestination(
           icon: Icon(Icons.book),
           label: 'หนังสือ',
         ),
         NavigationDestination(
-          icon: Badge(child: Icon(Icons.add)),
-          label: 'เพิ่มสมาชิก',
+          icon: Icon(Icons.add),
+          label: 'เพิ่มหนังสือ',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.group),
+          label: 'สมาชิกกลุ่ม',
         ),
       ],
     );

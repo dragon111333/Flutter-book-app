@@ -21,9 +21,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
     member.email = widget.member.email ?? "";
     member.id = widget.member.id ?? 0;
 
-    print("mmeber------------>" + widget.member.toString());
+    print("mmeber------------>${widget.member}");
 
     return Drawer(
+      backgroundColor: Colors.white,
       child: ListView(
         // Important: Remove any padding from the ListView.
         padding: EdgeInsets.zero,

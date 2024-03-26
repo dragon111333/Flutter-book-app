@@ -34,51 +34,73 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Widget showForm() {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Container(
-          alignment: Alignment.center,
-          margin: const EdgeInsets.only(top: 10, left: 20, right: 20),
-          child: Column(
-            children: [
-              const Text(
-                "เข้าสู่ระบบ",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-              TextFormField(
-                controller: email,
-                decoration: const InputDecoration(label: Text('E-mail')),
-                keyboardType: TextInputType.emailAddress,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextFormField(
-                controller: password,
-                decoration: const InputDecoration(label: Text('รหัสผ่าน')),
-                obscureText: true,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: 500,
-                child: ElevatedButton.icon(
-                    onPressed: onLogin,
-                    style:
-                        ElevatedButton.styleFrom(backgroundColor: Colors.amber),
-                    icon: const Icon(
-                      Icons.key,
-                      color: Colors.white,
-                    ),
-                    label: const Text(
-                      'เข้าสู่ระบบ',
-                      style: TextStyle(color: Colors.white),
-                    )),
-              )
-            ],
-          ),
-        ));
+    return Container(
+      alignment: Alignment.center,
+      padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+        image: AssetImage("assets/images/book.jpg"),
+        fit: BoxFit.cover,
+      )),
+      child: IntrinsicHeight(
+        child: Card(
+            elevation: 4.0,
+            color: Color.fromRGBO(255, 255, 255, 0.808),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: 20),
+                const Text(
+                  "ร้านขายหนังสือ",
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
+                const Text(
+                  "เข้าสู่ระบบ",
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                    controller: email,
+                    decoration: const InputDecoration(label: Text('E-mail')),
+                    keyboardType: TextInputType.emailAddress,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                  width: 500,
+                ),
+                SizedBox(
+                  width: 300,
+                  child: TextFormField(
+                    controller: password,
+                    decoration: const InputDecoration(label: Text('รหัสผ่าน')),
+                    obscureText: true,
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 300,
+                  child: ElevatedButton.icon(
+                      onPressed: onLogin,
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.amber),
+                      icon: const Icon(
+                        Icons.key,
+                        color: Colors.white,
+                      ),
+                      label: const Text(
+                        'เข้าสู่ระบบ',
+                        style: TextStyle(color: Colors.white),
+                      )),
+                ),
+                SizedBox(height: 20),
+              ],
+            )),
+      ),
+    );
   }
 
   //================================

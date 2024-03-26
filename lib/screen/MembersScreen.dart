@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_api_db/helper/ApiBaseHelper.dart';
 import 'package:flutter_api_db/models/member.dart';
 import 'package:flutter_api_db/screen/CustomDrawer.dart';
+import 'package:flutter_api_db/screen/EditMemberScreen.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,7 +51,7 @@ class _MemberScreenState extends State<MemberScreen> {
         builder: (context, snapshot) {
           try {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Text("");
+              return const Text("");
             } else if (snapshot.hasData) {
               print("delete status ->" + snapshot.data!["status"]);
               WidgetsBinding.instance.addPostFrameCallback((timestamp) {
@@ -81,10 +81,10 @@ class _MemberScreenState extends State<MemberScreen> {
                         ));
               });
             }
-            return Text("");
+            return const Text("");
           } catch (error) {
-            print("DELETE ERROR --> ${error}");
-            return Text("");
+            print("DELETE ERROR --> $error");
+            return const Text("");
           }
         });
   }
@@ -115,17 +115,23 @@ class _MemberScreenState extends State<MemberScreen> {
                 print(snapshot.data!["data"]);
 
                 List<dynamic> rawMemberRow = snapshot.data!["data"];
-                int _index = 0;
+                int index = 0;
                 List<DataRow> memberRow = rawMemberRow.map((dynamic e) {
-                  _index++;
+                  index++;
                   return DataRow(
                     cells: <DataCell>[
-                      DataCell(Text(_index.toString())),
+                      DataCell(Text(index.toString())),
                       DataCell(Text(e["name"])),
                       DataCell(Text(e["last_name"])),
                       DataCell(Text(e["email"])),
                       DataCell(ElevatedButton.icon(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      EditMemberScreen(memberID: e["id"])));
+                        },
                         style: ElevatedButton.styleFrom(
                             backgroundColor:
                                 const Color.fromARGB(255, 255, 238, 0)),
@@ -133,7 +139,7 @@ class _MemberScreenState extends State<MemberScreen> {
                           "แก้ไข",
                           style: TextStyle(color: Colors.black),
                         ),
-                        icon: Icon(
+                        icon: const Icon(
                           Icons.edit_outlined,
                           color: Colors.black,
                         ),
@@ -146,7 +152,7 @@ class _MemberScreenState extends State<MemberScreen> {
                             backgroundColor: const Color.fromARGB(
                                 255, 255, 117, 75), // Background color
                           ),
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.delete,
                             color: Colors.white,
                           ),
@@ -250,7 +256,7 @@ class _MemberScreenState extends State<MemberScreen> {
           (() async {
             final SharedPreferences prefs =
                 await SharedPreferences.getInstance();
-            String? userString = await prefs.getString('user_info');
+            String? userString = prefs.getString('user_info');
             loginMember = Member.fromJson(jsonDecode(userString!));
           })();
         });

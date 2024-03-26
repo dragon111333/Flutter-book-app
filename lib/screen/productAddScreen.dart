@@ -1,7 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_api_db/helper/ApiBaseHelper.dart';
+import 'package:flutter_api_db/models/member.dart';
+import 'package:flutter_api_db/screen/CustomDrawer.dart';
+import 'package:flutter_api_db/screen/NavBar.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductAddScreen extends StatefulWidget {
   const ProductAddScreen({Key? key}) : super(key: key);
@@ -19,7 +24,7 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
   final p_price = TextEditingController();
   //ตัวแปรจัดเก็บข้อมูลไฟล์ที่ผู้ใช้เลือก
   File? uploadImage;
-
+  Member? loginMember;
   @override
   void dispose() {
     //เมื่อปิดหน้ากรอกข้อมูลให้ล้างตัวแปรออก
@@ -29,10 +34,32 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    loginMember = Member();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('เพิ่มข้อมูลสินค้า')),
+      drawer: CustomDrawer(
+        member: loginMember!,
+      ),
+      onDrawerChanged: (isOpen) {
+        setState(() {
+          (() async {
+            final SharedPreferences prefs =
+                await SharedPreferences.getInstance();
+            String? userString = prefs.getString('user_info');
+            loginMember = Member.fromJson(jsonDecode(userString!));
+          })();
+        });
+      },
+      appBar: AppBar(
+          backgroundColor: Colors.amber,
+          title: const Text('เพิ่มข้อมูลสินค้า')),
       body: result == null ? showForm() : buildFutureBuilder(),
+      bottomNavigationBar: const NavBar(index: 3),
     );
   }
 
@@ -53,7 +80,8 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
               TextFormField(
                 controller: p_price,
                 decoration: const InputDecoration(labelText: 'ราคา'),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -159,8 +187,8 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else {
-          //ถ้าข้อมูลในส่วน status มีค่าเท่ากับ ok
-          if (snapshot.data!['status'] == 'ok') {
+          if (snapshot.hasData && snapshot.data!['status'] == 'ok') {
+            print('add status ${snapshot.data!['status']}');
             Future(() {
               // แสดงกล้องข้อความโต้ตอบ
               showDialog(
