@@ -17,12 +17,12 @@ samples, guidance on mobile development, and a full API reference.
 
 1. remote เข้าไปเซิฟเวอร์โดย user ubuntu
 
-2. cd ไปที่ Folder ของตัวเองเช่น `cd /home/users4`
+2. cd ไปที่ Folder ของตัวเอง เช่น `cd /home/users4`
 
-3. ` sudo composer create-project --prefer-dist laravel/lumen bookshop`
-4. แก้ไฟล์ .conf ของ apache ของ user ตัวเอง `sudo nano /etc/apache2/conf-available/[userของตัวเอง].conf` ให้ Alias กับ <Directory> ชี้ไปที่ bookshop
+3. ` sudo composer create-project --prefer-dist laravel/lumen [ชื่อโปรเจค]`
+4. แก้ไฟล์ .conf ของ apache ของ user ตัวเอง `sudo nano /etc/apache2/conf-available/[userของตัวเอง].conf` ให้ Alias กับ <Directory> ชี้ไปที่ [ชื่อโปรเจค]
 
-5. ให้สิทธิ์  `sudo chmod -R 777 /home/user4/bookshop/*`,`sudo chmod -R 777 /home/user4/bookshop/.env`
+5. ให้สิทธิ์  `sudo chmod -R 777 /home/user4/[ชื่อโปรเจค]/*`,`sudo chmod -R 777 /home/user4/[ชื่อโปรเจค]/.env`
 
 6. รีสตาร์ท Apache ด้วย `sudo systemctl restart apache2`
 
