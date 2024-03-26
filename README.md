@@ -29,9 +29,9 @@ samples, guidance on mobile development, and a full API reference.
 7. เขียน API 
   - ทำ router
   - สร้าง Controller,Model
-  - สร้าง DB ตั้งค่า .env 
-    -เปิด `$app->withEloquent();` ใน bootstrap/app.php
-  -สร้างตาราง
+  - สร้าง DB ตั้งค่า .env
+  - เปิด `$app->withEloquent();` ใน bootstrap/app.php
+  - สร้างตาราง
 ```sql
 	CREATE TABLE members(
 		id int(8) AUTO_INCREMENT,
