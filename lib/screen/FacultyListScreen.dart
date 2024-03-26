@@ -2,26 +2,27 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_api_db/helper/ApiBaseHelper.dart';
+import 'package:flutter_api_db/models/faculty.dart';
 import 'package:flutter_api_db/models/member.dart';
 import 'package:flutter_api_db/models/products.dart';
 import 'package:flutter_api_db/screen/CustomDrawer.dart';
 import 'package:flutter_api_db/screen/NavBar.dart';
-import 'package:flutter_api_db/screen/productItem.dart';
+import 'package:flutter_api_db/screen/FacultyItem.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class ProductListScreen extends StatefulWidget {
-  const ProductListScreen({super.key});
+class FacultyListScreen extends StatefulWidget {
+  const FacultyListScreen({super.key});
 
   @override
-  State<StatefulWidget> createState() => _ProductListPageState();
+  State<StatefulWidget> createState() => _FacultyListPageState();
 }
 
-class _ProductListPageState extends State<ProductListScreen> {
+class _FacultyListPageState extends State<FacultyListScreen> {
   //ประกาศตัวแปรประเภท Future ส าหรับเชื่อมข้อมูลที่อ่านได้จาก api
   late Future<Map<String, dynamic>> futureProduct;
   //เหตุการณ์เริ่มตน้ ทา งานของหน้าน
   //ประกาศตัวแปรประเภท Future ส าหรับรับผลลัพธ์ได้จาก api ลบข้อมูลสินค้า
-  late Future<Map<String, dynamic>> futureDeleteProduct;
+  late Future<Map<String, dynamic>> futuredeleteFaculty;
   late Member? loginMember;
   @override
   void initState() {
@@ -35,6 +36,7 @@ class _ProductListPageState extends State<ProductListScreen> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
+      backgroundColor: Colors.black,
       drawer: CustomDrawer(
         member: loginMember!,
       ),
@@ -49,9 +51,11 @@ class _ProductListPageState extends State<ProductListScreen> {
         });
       },
       appBar: AppBar(
-        backgroundColor: Colors.amber,
+        backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
         title: const Text(
-          'รายการสินค้า',
+          'รายชื่อคณะ',
+          style: TextStyle(color: Colors.white),
         ),
       ),
       //ในส่วน body ให้เรียกใช้ฟังก์ชัน buildFutureProduct
@@ -65,12 +69,12 @@ class _ProductListPageState extends State<ProductListScreen> {
   void loadProduct() async {
     ApiBaseHelper apiBaseHelper = ApiBaseHelper();
     setState(() {
-      futureProduct = apiBaseHelper.get(url: ApiBaseHelper.getProduct);
+      futureProduct = apiBaseHelper.get(url: ApiBaseHelper.getFacultys);
     });
   }
 
   //========================================================================
-  //ฟังก์ชัน buildFutureProduct ส าหรับแสดงข้อมูลรายการสินค้าที่อ่านได้
+  //ฟังก์ชัน buildFutureProduct ส าหรับแสดงข้อมูลรายชื่อคณะที่อ่านได้
   FutureBuilder<Map<String, dynamic>> buildFutureProduct() {
     return FutureBuilder<Map<String, dynamic>>(
       future: futureProduct,
@@ -79,8 +83,8 @@ class _ProductListPageState extends State<ProductListScreen> {
         if (snapshot.hasData) {
           //ตรวจสอบข้อมูลในส่วน status ว่ามีค่ากับเท่ากับ ok หรือไม่
           if (snapshot.data!['status'] == 'ok') {
-            //น าข้อมูลในส่วน data มาเก็บไว้ในตัวแปร productList
-            List<dynamic> productList = snapshot.data!['data'];
+            //น าข้อมูลในส่วน data มาเก็บไว้ในตัวแปร FacultyList
+            List<dynamic> facultyList = snapshot.data!['data'];
             //-----------------------------------
             return RefreshIndicator(
               //เมื่อกดลากเลื่อน listview ลงด้่านล่างจะ refresh ข้อมูล
@@ -95,12 +99,10 @@ class _ProductListPageState extends State<ProductListScreen> {
               },
               child: ListView.builder(
                   physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: productList.length,
+                  itemCount: facultyList.length,
                   itemBuilder: (context, index) {
-                    //จัดรูปแบบการแสดงผลแต่ละรายการ ตามที่ก าหนดไว้ใน ProductItem
-                    //ซึ่งเขียนไว้ในไฟล์ ProductItem.dart
-                    return ProductItem(Products.fromJson(productList[index]),
-                        deleteProduct, loadProduct);
+                    return FacultyItem(Faculty.fromJson(facultyList[index]),
+                        deleteFaculty, loadProduct);
                   }),
             );
             //-----------------------------------
@@ -122,15 +124,15 @@ class _ProductListPageState extends State<ProductListScreen> {
     );
   }
 
-  //ฟังก์ชัน deleteProduct ส าหรับเรียกใช้งาน api ลบข้อมูลสินค้า
+  //ฟังก์ชัน deleteFaculty ส าหรับเรียกใช้งาน api ลบข้อมูลสินค้า
   //=================================================================
-  void deleteProduct(int productId) async {
+  void deleteFaculty(int facultyId) async {
     //ก าหนด url ของ api endpoint ส าหรับลบข้อมูลตามรหัสสินค้า
-    String urlApi = "${ApiBaseHelper.deleteProduct}/$productId";
+    String urlApi = "${ApiBaseHelper.deleteFaculty}$facultyId";
     //เรียกใช้งานฟังก์ชัน delete ใน ApiBaseHelper() และส่ง url และรหัส status code เมื่อท างานส าเร็จ
-    futureDeleteProduct = ApiBaseHelper().delete(url: urlApi, statusCode: 202);
-    //เมื่อ futureDeleteProduct ได้รับผลลัพธ์จากการเรียกใช้ api endpoint แล้วให้ท างานในฟังก์ชัน then
-    futureDeleteProduct.then((value) {
+    futuredeleteFaculty = ApiBaseHelper().delete(url: urlApi, statusCode: 202);
+    //เมื่อ futuredeleteFaculty ได้รับผลลัพธ์จากการเรียกใช้ api endpoint แล้วให้ท างานในฟังก์ชัน then
+    futuredeleteFaculty.then((value) {
       String message;
       if (value['status'] == 'ok') {
         message = 'ลบข้อมูลสำเร็จ';

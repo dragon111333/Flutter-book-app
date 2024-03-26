@@ -208,7 +208,13 @@ class _EditMemberScreenState extends State<EditMemberScreen> {
       },
       appBar: AppBar(
         title: const Text('แก้ไขข้อมูลผู้ใช้'),
-        backgroundColor: Colors.amber,
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(4.0),
+            child: Container(
+              color: Color.fromARGB(24, 0, 0, 0),
+              height: 1.0,
+            )),
+        backgroundColor: Colors.white,
       ),
       //body: result == null ? showForm() : buildFutureBuilder(),
       body: Container(

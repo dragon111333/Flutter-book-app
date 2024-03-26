@@ -1,70 +1,66 @@
-import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_api_db/helper/ApiBaseHelper.dart';
-import 'package:flutter_api_db/models/member.dart';
-import 'package:flutter_api_db/screen/CustomDrawer.dart';
-import 'package:flutter_api_db/screen/NavBar.dart';
+import 'package:flutter_api_db/models/faculty.dart';
+import 'package:flutter_api_db/models/products.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class ProductAddScreen extends StatefulWidget {
-  const ProductAddScreen({Key? key}) : super(key: key);
-
+class FacultyUpdateScreen extends StatefulWidget {
+  //ตัวแปร data ส าหรับจัดเก็บข้อมูลสินค้าที่จะถูกส่งเข้ามาแก้ไขในหน้านี้
+  Faculty data;
+  //ฟังก์ชัน loadProduct ส าหรับเชื่อมโยงฟังก์ชันการโหลดข้อมูลสินค้าที่จะถูกส่งเข้ามาในหน้านี้
+  Function loadProduct;
+  FacultyUpdateScreen({Key? key, required this.data, required this.loadProduct})
+      : super(key: key);
   @override
-  State<ProductAddScreen> createState() => _ProductAddScreenState();
+  State<FacultyUpdateScreen> createState() => _FacultyUpdateScreenState();
 }
 
-class _ProductAddScreenState extends State<ProductAddScreen> {
-  //ตัวแปร result สำหรับจัดเก็บผลลัพธ์ที่ได้จากการเพิ่มข้อมูลใหม่
+class _FacultyUpdateScreenState extends State<FacultyUpdateScreen> {
+  //ตัวแปร result ส าหรับจดัเก็บผลลพัธ์ที่ไดจ้ากการเพิ่มขอ้มูลใหม่
   Future<Map<String, dynamic>>? result;
   //ตัวแปรจัดเก็บค่าที่กรอกในช่องชื่อสินค้า
-  final p_name = TextEditingController();
+  late TextEditingController f_name;
   //ตัวแปรจัดเก็บค่าที่กรอกในช่องราคาสินค้า
-  final p_price = TextEditingController();
+  late TextEditingController details;
   //ตัวแปรจัดเก็บข้อมูลไฟล์ที่ผู้ใช้เลือก
   File? uploadImage;
-  Member? loginMember;
   @override
-  void dispose() {
-    //เมื่อปิดหน้ากรอกข้อมูลให้ล้างตัวแปรออก
-    p_name.dispose();
-    p_price.dispose();
-    super.dispose();
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //ให้น าข้อมูลสินค้ามาแสดงในแต่ละช่อง TextFormField
+    f_name = TextEditingController(text: widget.data.f_name!);
+    details = TextEditingController(text: widget.data.details!);
   }
 
   @override
-  void initState() {
-    super.initState();
-    loginMember = Member();
+  void dispose() {
+    //เมื่อปิ ดหน้ากรอกข้อมูลให้ล้างตัวแปรออก
+    f_name.dispose();
+    details.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: CustomDrawer(
-        member: loginMember!,
-      ),
-      onDrawerChanged: (isOpen) {
-        setState(() {
-          (() async {
-            final SharedPreferences prefs =
-                await SharedPreferences.getInstance();
-            String? userString = prefs.getString('user_info');
-            loginMember = Member.fromJson(jsonDecode(userString!));
-          })();
-        });
-      },
       appBar: AppBar(
-          backgroundColor: Colors.amber,
-          title: const Text('เพิ่มข้อมูลสินค้า')),
+          bottom: PreferredSize(
+              preferredSize: const Size.fromHeight(4.0),
+              child: Container(
+                color: Color.fromARGB(24, 0, 0, 0),
+                height: 1.0,
+              )),
+          backgroundColor: Colors.white,
+          title: const Text('แก้ไขข้อมูลคณะ')),
       body: result == null ? showForm() : buildFutureBuilder(),
-      bottomNavigationBar: const NavBar(index: 3),
     );
   }
 
   //======================================================
-  //ฟังก์ชันฟอร์มสำหรับกรอกข้อมูล
+  //ฟังก์ชันฟอร์มส าหรับกรอกข้อมูล
   Widget showForm() {
     return SingleChildScrollView(
       child: Container(
@@ -74,11 +70,11 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
           child: Column(
             children: [
               TextFormField(
-                controller: p_name,
+                controller: f_name,
                 decoration: const InputDecoration(labelText: 'ชื่อสินค้า'),
               ),
               TextFormField(
-                controller: p_price,
+                controller: details,
                 decoration: const InputDecoration(labelText: 'ราคา'),
                 keyboardType:
                     const TextInputType.numberWithOptions(decimal: true),
@@ -90,15 +86,19 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                   child: SizedBox(
                     width: 150,
                     height: 120,
-                    //ถ้าผู้ใช้เลือกรูปภาพแล้วให้แสดงภาพที่เลือก ถ้าไม่ใช่ให้แสดงไอคอน image
+                    //ถ้าผู้ใช้เลือกรูปภาพแล้วให้แสดงภาพที่เลือก
                     child: uploadImage != null
                         ? Image.file(uploadImage!)
-                        : const Icon(
-                            Icons.image,
-                            size: 100,
-                          ),
+                        : widget.data !=
+                                null //ถ้าข้อมูลเดิมมีรูปภาพให้แสดงรูปภาพ
+                            ? Image.network(Uri.decodeFull(
+                                ApiBaseHelper.memberImage + widget.data.f_img!))
+                            : const Icon(
+                                Icons.image,
+                                size: 100,
+                              ),
                   ),
-                  //รายการเมนูสำหรับเลือกรูปภาพ
+                  //รายการเมนูส าหรับเลือกรูปภาพ
                   itemBuilder: (BuildContext context) =>
                       <PopupMenuEntry<ImageSource>>[
                     //เลือกรูปภาพจาก Image Gallery
@@ -121,41 +121,42 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
               const SizedBox(
                 height: 10,
               ),
-              //ปุ่มเพิ่มข้อมูลสินค้า
+              //ป่มุ เพิ่มขอ้มูลสินคา้
               ElevatedButton.icon(
                   icon: const Icon(Icons.add_circle),
-                  label: const Text('เพิ่มข้อมูล'),
+                  label: const Text('แก้ไขข้อมูล'),
                   onPressed: () {
                     //ตัวแปร productData เก็บข้อมูลสินค้าที่ผู้ใช้ป้อนบนฟอร์ม
                     Map<String, String> productData = {
-                      "p_name": p_name.text,
-                      "p_price": p_price.text,
+                      "f_name": f_name.text,
+                      "details": details.text,
                     };
                     Map<String, String>? fileUploadData;
                     //ตรวจสอบตัวแปร uploadImage ว่ามีข้อมูลหรือไม่
                     if (uploadImage != null) {
                       //ตัวแปร fileUploadData เก็บข้อมูลไฟล์รูปภาพที่ผู้เลือก
                       fileUploadData = {
-                        "fieldName": "p_img", //ฟิวด์ใน api
+                        "fieldName": "f_img", //ฟิ วด์ใน api
                         "filePath":
                             uploadImage!.path, //ที่อยู่ (path) ของไฟล์รูปภาพ
                       };
                     }
-
                     setState(() {
-                      //เรียกใช้งานฟังก์ชัน postFile เพื่อส่งข้อมูลไปยัง api
-                      result = ApiBaseHelper().post(
-                          url: ApiBaseHelper
-                              .addNewProduct, //url ของ api endpoint
-                          dataPost: productData, //ข้อมูลสินค้า
+                      //ก าหนด url ส าหรับเรียกใช้งาน api endpoint ส าหรับแก้ไขข้อมูลคณะตามรหัส p_id
+                      String urlApi =
+                          '${ApiBaseHelper.updateFaculty}${widget.data.f_id!}';
+                      //เรียกใช้งานฟังก์ชัน put เพื่อส่งข้อมูลไปยัง api
+                      result = ApiBaseHelper().put(
+                          url: urlApi, //url ของ api endpoint
+                          dataPut: productData, //ข้อมูลสินค้า
                           fileUpload: fileUploadData, //ข้อมูลไฟล์
                           statusCode:
-                              201 //รหัสการตอบกลับของ api เมื่อบันทึกข้อมูลสำเร็จ
+                              202 //รหัสการตอบกลับของ api เมื่อบันทึกข้อมูลส าเร็จ
                           );
                     });
                     //ล้างค่าตัวแปรออก
-                    p_name.clear();
-                    p_price.clear();
+                    f_name.clear();
+                    details.clear();
                     uploadImage = null;
                   })
             ],
@@ -165,19 +166,19 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
     );
   }
 
-  //======================================================
-  //ฟังก์ชันสำหรับเลือกรูปภาพ
+//======================================================
+  //ฟังก์ชันส าหรับเลือกรูปภาพ
   Future<void> chooseImage(ImageSource source) async {
     //เรียกใช้งาน ImagePicker
     var choosedimage = await ImagePicker().pickImage(source: source);
     setState(() {
-      //นำข้อมูลไฟล์รูปภาพที่เลือก มาเก็บไว้ในตัวแปร uploadImage
+      //น าข้อมูลไฟล์รูปภาพที่เลือก มาเก็บไว้ในตัวแปร uploadImage
       uploadImage = File(choosedimage!.path);
     });
   }
 
   //======================================================
-  //ฟังก์ชันสำหรับตรวจสอบการตอบกลับจากการเพิ่มข้อมูลใหม่
+  //ฟังก์ชันส าหรับตรวจสอบการตอบกลับจากการแก้ไขข้อมูลคณะ
   FutureBuilder<Map<String, dynamic>> buildFutureBuilder() {
     return FutureBuilder<Map<String, dynamic>>(
       future: result,
@@ -187,18 +188,22 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         } else {
-          if (snapshot.hasData && snapshot.data!['status'] == 'ok') {
-            print('add status ${snapshot.data!['status']}');
+          //ถ้าข้อมูลในส่วน status มีค่าเท่ากับ ok
+          if (snapshot.data!['status'] == 'ok') {
             Future(() {
+              //ให้เรียกใช้งานฟังก์ชัน loadProduct ที่ถูกส่งเข้ามาในหน้านี้
+              widget.loadProduct();
               // แสดงกล้องข้อความโต้ตอบ
               showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                        content: const Text('เพิ่มข้อมูลสำเร็จ'),
+                        content: const Text('แก้ไขข้อมูลส าเร็จ'),
                         actions: <Widget>[
                           ElevatedButton(
                               onPressed: () {
-                                //เมื่อกดปุ่มตกลง ให้กล่องข้อความโต้ตอบหายไป
+                                //เมื่อกดปุ่ มตกลง ให้กล่องข้อความโต้ตอบหายไป
+                                Navigator.of(context).pop();
+                                //ถอยกลับไปยังหน้าก่อนหน้านี้ คือหน้าแสดงรายชื่อคณะ
                                 Navigator.of(context).pop();
                               },
                               child: const Text('ตกลง')),
@@ -216,7 +221,7 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                         actions: <Widget>[
                           ElevatedButton(
                               onPressed: () {
-                                //เมื่อกดปุ่มตกลง ให้กล่องข้อความโต้ตอบหายไป
+                                //เมื่อกดปุ่ มตกลง ให้กล่องข้อความโต้ตอบหายไป
                                 Navigator.of(context).pop();
                               },
                               child: const Text('ตกลง')),
@@ -224,7 +229,6 @@ class _ProductAddScreenState extends State<ProductAddScreen> {
                       ));
             });
           }
-
           return showForm();
         }
       },

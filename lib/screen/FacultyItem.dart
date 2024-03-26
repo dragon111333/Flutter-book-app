@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_api_db/helper/ApiBaseHelper.dart';
+import 'package:flutter_api_db/models/faculty.dart';
 import 'package:flutter_api_db/models/products.dart';
-import 'package:flutter_api_db/screen/productUpdateScreen.dart';
+import 'package:flutter_api_db/screen/FacultyUpdateScreen.dart';
 
-class ProductItem extends StatefulWidget {
+class FacultyItem extends StatefulWidget {
   //object ข้อมูลสินค้าแต่ละรายการ
-  Products data;
+  Faculty data;
   //รับค่าข้อมูลสินค้าแต่ละรายการเข้ามาในคลาสนี้
   Function DeleteFunction;
   Function loadProduct;
-  ProductItem(this.data, this.DeleteFunction, this.loadProduct, {super.key});
+  FacultyItem(this.data, this.DeleteFunction, this.loadProduct, {super.key});
   @override
-  State<StatefulWidget> createState() => _ProductItemState();
+  State<StatefulWidget> createState() => _FacultyItemState();
 }
 
-class _ProductItemState extends State<ProductItem> {
+class _FacultyItemState extends State<FacultyItem> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -21,6 +23,7 @@ class _ProductItemState extends State<ProductItem> {
       onTap: () {},
       //กล่องแบบ Card
       child: Card(
+        elevation: .0,
         margin: const EdgeInsets.all(10),
         child: Padding(
           //ก าหนดช่องว่างจากขอบกล่อง
@@ -31,7 +34,7 @@ class _ProductItemState extends State<ProductItem> {
               //แสดงรูปภาพ
               Expanded(
                   child: Image.network(
-                Uri.decodeFull(widget.data.p_img!),
+                Uri.decodeFull(ApiBaseHelper.memberImage + widget.data.f_img!),
               )),
               //กล่องว่างๆ
               const SizedBox(
@@ -43,13 +46,14 @@ class _ProductItemState extends State<ProductItem> {
                   children: [
                     //แสดงชื่อสินค้า
                     Text(
-                      widget.data.p_name!,
-                      style: const TextStyle(fontSize: 18, color: Colors.orange),
+                      widget.data.f_name!,
+                      style:
+                          const TextStyle(fontSize: 18, color: Colors.orange),
                     ),
                     //แสดงราคา
                     Text(
-                      'ราคา: ${widget.data.p_price}',
-                      style: const TextStyle(fontSize: 16, color: Colors.grey),
+                      'รายละเอียด : ${widget.data.f_name!}',
+                      style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +62,7 @@ class _ProductItemState extends State<ProductItem> {
                         IconButton(
                             onPressed: () {
                               //เมื่อถูกกดให้เรียกใช้ฟังก์ชัน deleteFuction และส่งค่ารหัสสินค้าไปด้วย
-                              widget.DeleteFunction(widget.data.p_id);
+                              widget.DeleteFunction(widget.data.f_id);
                             },
                             icon: const Icon(Icons.delete)),
                         IconButton(
@@ -67,7 +71,7 @@ class _ProductItemState extends State<ProductItem> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => ProductUpdateScreen(
+                                      builder: (context) => FacultyUpdateScreen(
                                             data: widget.data,
                                             loadProduct: widget.loadProduct,
                                           )));

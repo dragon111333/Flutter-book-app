@@ -97,7 +97,8 @@ class _MemberScreenState extends State<MemberScreen> {
     var supportingText = member.email!;
 
     return Card(
-        elevation: 4.0,
+        elevation: .0,
+        color: Colors.white,
         child: Column(
           children: [
             ListTile(
@@ -119,7 +120,7 @@ class _MemberScreenState extends State<MemberScreen> {
             ),
             ButtonBar(
               children: [
-                ElevatedButton.icon(
+                ElevatedButton(
                   onPressed: () {
                     Navigator.pushReplacement(
                         context,
@@ -127,33 +128,26 @@ class _MemberScreenState extends State<MemberScreen> {
                             builder: (_) =>
                                 EditMemberScreen(memberID: member.id!)));
                   },
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(255, 255, 238, 0)),
-                  label: const Text(
-                    "แก้ไข",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  icon: const Icon(
+                  style:
+                      ElevatedButton.styleFrom(backgroundColor: Colors.black),
+                  child: const Icon(
                     Icons.edit_outlined,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
-                ElevatedButton.icon(
-                    onPressed: () {
-                      removeMember(member.id!);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color.fromARGB(
-                          255, 255, 117, 75), // Background color
-                    ),
-                    icon: const Icon(
-                      Icons.delete,
-                      color: Colors.white,
-                    ),
-                    label: const Text(
-                      "ลบ",
-                      style: TextStyle(color: Colors.white),
-                    ))
+                ElevatedButton(
+                  onPressed: () {
+                    removeMember(member.id!);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color.fromARGB(
+                        255, 255, 117, 75), // Background color
+                  ),
+                  child: const Icon(
+                    Icons.delete,
+                    color: Colors.white,
+                  ),
+                )
               ],
             )
           ],
@@ -213,6 +207,7 @@ class _MemberScreenState extends State<MemberScreen> {
     loadMembers();
 
     return Scaffold(
+      backgroundColor: Colors.black,
       drawer: CustomDrawer(
         member: loginMember!,
       ),
@@ -227,8 +222,15 @@ class _MemberScreenState extends State<MemberScreen> {
         });
       },
       appBar: AppBar(
-        title: const Text('ผู้ใช้งาน'),
-        backgroundColor: Colors.amber,
+        title: const Text('ผู้ใช้งาน', style: TextStyle(color: Colors.white)),
+        // bottom: PreferredSize(
+        //     preferredSize: const Size.fromHeight(4.0),
+        //     child: Container(
+        //       color: Color.fromARGB(104, 255, 255, 255),
+        //       height: 1.0,
+        //     )),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.black,
       ),
       body: Container(
         alignment: Alignment.center,
@@ -236,29 +238,32 @@ class _MemberScreenState extends State<MemberScreen> {
         child: Center(
           child: Column(
             children: [
-              const Text(
-                "รายชื่อสมาชิก",
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const AddMemberScreen(),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 147, 224, 45),
-                ),
-                child: const Text(
-                  "+ เพิ่มสมาชิก",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+              // const Text(
+              //   "สมาชิก",
+              //   style: TextStyle(
+              //       fontSize: 25,
+              //       fontWeight: FontWeight.bold,
+              //       color: Colors.white),
+              // ),
+              // ElevatedButton(
+              //   onPressed: () {
+              //     Navigator.pushReplacement(
+              //       context,
+              //       MaterialPageRoute(
+              //         builder: (_) => const AddMemberScreen(),
+              //       ),
+              //     );
+              //   },
+              //   style: ElevatedButton.styleFrom(
+              //     backgroundColor: const Color.fromARGB(255, 147, 224, 45),
+              //   ),
+              //   child: const Text(
+              //     "+ เพิ่มสมาชิก",
+              //     style: TextStyle(color: Colors.white),
+              //   ),
+              // ),
               SizedBox(
-                height: MediaQuery.of(context).size.height - 280,
+                height: MediaQuery.of(context).size.height - 200,
                 child: MembersSnap(),
               ),
               DeleteStatus()

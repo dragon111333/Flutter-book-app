@@ -190,7 +190,13 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
       },
       appBar: AppBar(
         title: const Text('แก้ไขข้อมูลผู้ใช้'),
-        backgroundColor: Colors.amber,
+        bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(4.0),
+            child: Container(
+              color: Color.fromARGB(24, 0, 0, 0),
+              height: 1.0,
+            )),
+        backgroundColor: Colors.white,
       ),
       //body: result == null ? showForm() : buildFutureBuilder(),
       body: Container(
@@ -268,12 +274,16 @@ class _AddMemberScreenState extends State<AddMemberScreen> {
           ),
           SizedBox(
               width: inputWidth,
-              child: ElevatedButton(
+              child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(255, 147, 224, 45),
+                    backgroundColor: Colors.black,
                   ),
                   onPressed: () => createMember(),
-                  child: const Text(
+                  icon: Icon(
+                    Icons.save,
+                    color: Colors.white,
+                  ),
+                  label: const Text(
                     "บันทึก",
                     style: TextStyle(color: Colors.white),
                   ))),

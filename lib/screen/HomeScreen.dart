@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_api_db/screen/UserAccountScreen.dart';
 import 'package:flutter_api_db/screen/aboutUs.dart';
 import 'package:flutter_api_db/screen/LoginScreen.dart';
-import 'package:flutter_api_db/screen/productAddScreen.dart';
+import 'package:flutter_api_db/screen/FacultyAddScreen.dart';
 
 import '../models/users.dart';
 
@@ -19,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0; //ค่า 0 คือลำดับแรก
   //กำหนดรายการของหน้าทั้งหมดไว้ในตัวแปร _pages
   static final List<Widget> _pages = <Widget>[
-    const ProductAddScreen(), //หน้าเพิ่มข้อมูลสินค้า
+    const FacultyAddScreen(), //หน้าเพิ่มข้อมูลคณะ
     const AboutUs(), //หน้าเกี่ยวกับเรา
   ];
   @override
@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.list_alt_rounded),
-            label: 'รายการสินค้า',
+            label: 'รายชื่อคณะ',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.add_circle),

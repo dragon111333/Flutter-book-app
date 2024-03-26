@@ -39,7 +39,9 @@ class _LoginScreenState extends State<LoginScreen> {
       padding: const EdgeInsets.only(top: 10, left: 20, right: 20),
       decoration: const BoxDecoration(
           image: DecorationImage(
-        image: AssetImage("assets/images/book.jpg"),
+        image: NetworkImage(
+            "https://campus.campus-star.com/app/uploads/2019/11/msu-Graduation-2.jpg"),
+        //AssetImage("assets/images/book.jpg"),
         fit: BoxFit.cover,
       )),
       child: IntrinsicHeight(
@@ -51,8 +53,8 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 const SizedBox(height: 20),
                 const Text(
-                  "ร้านขายหนังสือ",
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  "ยินดีต้องรับ",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const Text(
                   "เข้าสู่ระบบ",
@@ -86,9 +88,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: ElevatedButton.icon(
                       onPressed: onLogin,
                       style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.amber),
+                          backgroundColor: Colors.black),
                       icon: const Icon(
-                        Icons.key,
+                        Icons.lock,
                         color: Colors.white,
                       ),
                       label: const Text(

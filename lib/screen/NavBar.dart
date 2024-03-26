@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_api_db/screen/AddMemberScreen.dart';
 import 'package:flutter_api_db/screen/MembersScreen.dart';
-import 'package:flutter_api_db/screen/ProductListScreen.dart';
+import 'package:flutter_api_db/screen/FacultyListScreen.dart';
 import 'package:flutter_api_db/screen/aboutUs.dart';
-import 'package:flutter_api_db/screen/productAddScreen.dart';
+import 'package:flutter_api_db/screen/FacultyAddScreen.dart';
 
 class NavBar extends StatefulWidget {
   final int index;
@@ -25,6 +25,7 @@ class _NavBarState extends State<NavBar> {
     });
 
     return NavigationBar(
+      elevation: .0,
       onDestinationSelected: (int index) {
         setState(() {
           print("select index : $index");
@@ -40,10 +41,10 @@ class _NavBarState extends State<NavBar> {
               break;
             case 2:
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const ProductListScreen()));
+                  MaterialPageRoute(builder: (_) => const FacultyListScreen()));
             case 3:
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const ProductAddScreen()));
+                  MaterialPageRoute(builder: (_) => const FacultyAddScreen()));
             case 4:
               Navigator.pushReplacement(
                   context, MaterialPageRoute(builder: (_) => const AboutUs()));
@@ -51,27 +52,46 @@ class _NavBarState extends State<NavBar> {
           }
         });
       },
-      indicatorColor: Colors.amber,
+      indicatorColor: Colors.black,
       selectedIndex: currentPageIndex,
       destinations: const <Widget>[
         NavigationDestination(
-          selectedIcon: Icon(Icons.home),
+          selectedIcon: Icon(
+            Icons.home,
+            color: Colors.white,
+          ),
           icon: Icon(Icons.home_outlined),
           label: 'หน้าแรก',
         ),
         NavigationDestination(
+          selectedIcon: Icon(
+            Icons.add_comment,
+            color: Colors.white,
+          ),
           icon: Badge(child: Icon(Icons.add_comment)),
           label: 'เพิ่มสมาชิก',
         ),
         NavigationDestination(
+          selectedIcon: Icon(
+            Icons.book_online,
+            color: Colors.white,
+          ),
           icon: Icon(Icons.book),
-          label: 'หนังสือ',
+          label: 'คณะ',
         ),
         NavigationDestination(
+          selectedIcon: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
           icon: Icon(Icons.add),
-          label: 'เพิ่มหนังสือ',
+          label: 'เพิ่มคณะ',
         ),
         NavigationDestination(
+          selectedIcon: Icon(
+            Icons.group,
+            color: Colors.white,
+          ),
           icon: Icon(Icons.group),
           label: 'สมาชิกกลุ่ม',
         ),

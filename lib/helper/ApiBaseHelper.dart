@@ -9,9 +9,9 @@ class ApiBaseHelper {
   static const String _baseUrl = "http://3.0.182.40";
   static const _api = "$_baseUrl/mbsapp/api";
   static const _publicFolder = "$_baseUrl/mbsapp";
-  //กำหนด url ของ api endpoint สำหรับเรียกดูรายการสินค้าทั้งหมด
+  //กำหนด url ของ api endpoint สำหรับเรียกดูรายชื่อคณะทั้งหมด
   static const getProduct = "$_api/products_image";
-  //กำหนด url ของ api endpoint สำหรับเพิ่มข้อมูลสินค้า
+  //กำหนด url ของ api endpoint สำหรับเพิ่มข้อมูลคณะ
   static const addNewProduct = "$_api/products";
   //กำหนด url ของ api endpoint สำหรับลบข้อมูลสินค้า
   static const deleteProduct = "$_api/products";
@@ -26,6 +26,11 @@ class ApiBaseHelper {
   static const createMember = "$_api/members";
   static const updateMember = "$_api/members/";
   static const deleteMember = "$_api/members/";
+
+  static const getFacultys = "$_api/facultys";
+  static const addNewFaculty = "$_api/facultys";
+  static const deleteFaculty = "$_api/facultys/";
+  static const updateFaculty = "$_api/facultys/";
 
   Future<Map<String, dynamic>> get({String? url, String? token}) async {
     http.Response responseData;
