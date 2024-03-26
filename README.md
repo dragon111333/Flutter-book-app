@@ -44,4 +44,14 @@ samples, guidance on mobile development, and a full API reference.
 		CONSTRAINT member_pk PRIMARY KEY(id)
 	);
 	insert into members set name="test" , last_name="kub" ,email="test@gmail.com",password="555";
+	CREATE TABLE products(
+		p_id int(8) AUTO_INCREMENT ,
+	     	p_name varchar(255),
+	     	p_price float DEFAULT 0.0,
+	    	p_img varchar(255) DEFAULT "",
+	    	created_at timestamp DEFAULT CURRENT_TIMESTAMP,
+	    	updated_at timestamp	DEFAULT CURRENT_TIMESTAMP,
+	    	CONSTRAINT products PRIMARY KEY(p_id)
+	);
 ```
+
